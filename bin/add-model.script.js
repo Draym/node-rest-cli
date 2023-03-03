@@ -7,7 +7,10 @@ const DataTypes = {
     NUMBER: "number",
     INTEGER: "number",
     DATE: "Date",
-    DECIMAL: "string"
+    DECIMAL: function (precision, scale) {
+        return "string"
+    },
+    JSON: "string"
 }
 
 const ignoredKeys = ["id", "createdAt", "updatedAt"]
