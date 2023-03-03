@@ -32,7 +32,7 @@ ${properties}
 
 export const init = (sequelize: Sequelize): typeof ${model}Model => {
     // Init all models
-    ${model}Model.init(${config.seq},
+    ${model}Model.init(${config.seqFormatted},
     {
         underscored: true,
         modelName: "${name.raw}",
@@ -271,14 +271,19 @@ function getModelProperties(data) {
     const start = data.indexOf(`", {`)
     const end = data.indexOf(`})`, start)
     const payload = `{${data.substring(start + 4, end)}}`
-    const obj = eval('(' + payload + ')')
-    const keys = Object.keys(obj)
+    const json = eval('(' + payload + ')')
+    const keys = Object.keys(json)
+    const obj = keys.reduce((result, key) => {
+        result[uncapitalize(prettify(key))] = json[key]
+        return result
+    }, {})
+    const seqFormatted = keys.reduce((result, key) => {
+        return result.replace(key, uncapitalize(prettify(key)))
+    }, payload)
     return {
         seq: payload,
-        obj: keys.reduce((result, key) => {
-            result[uncapitalize(prettify(key))] = obj[key]
-            return result
-        }, {})
+        seqFormatted: seqFormatted,
+        obj: obj
     }
 }
 
