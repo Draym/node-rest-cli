@@ -285,11 +285,11 @@ function prettify(name) {
     name = replaceAll(name, "-", " ")
     name = replaceAll(name, "_", " ")
 
-    return name
+    name = name
         .split(' ')
         .map(word => capitalize(word))
         .join(' ')
-        .replace(" ", "")
+    return replaceAll(name, " ", "")
 }
 
 function escapeRegExp(string) {
