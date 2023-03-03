@@ -1,6 +1,6 @@
 {
   "name": "@d-lab/node-rest-cli",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "type": "commonjs",
   "description": "CLI to generate code for your REST API",
   "author": {

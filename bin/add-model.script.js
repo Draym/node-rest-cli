@@ -297,7 +297,7 @@ function getModelName(data) {
     const end = data.indexOf(`", {`, start)
     let raw = data.substring(start + 2, end)
     let name = raw.toString()
-    if (name.at(name.length - 2) !== "s") {
+    if (name.at(name.length - 1) === "s" && name.at(name.length - 2) !== "s") {
         name = name.substring(0, name.length - 1)
     }
     return {
