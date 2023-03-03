@@ -122,9 +122,10 @@ ${payload}
 }
 
 function updateInterfaceIndex(name) {
+    const path = "./src/interfaces/index.ts"
     let content
-    if (fs.existsSync('./src/interfaces/index.ts')) {
-        content = fs.readFileSync('./src/interfaces/index.ts')
+    if (fs.existsSync()) {
+        content = fs.readFileSync(path)
     } else {
         content = `
 export {
@@ -138,15 +139,16 @@ export {
         // add export
         const start = content.indexOf(`export {`)
         content = content.slice(0, start + 8) + "\n\t" + model + "," + content.slice(start + 8)
-        fs.writeFileSync(`./src/interfaces/index.ts`, content)
+        fs.writeFileSync(path, content)
     }
     console.log("- Interface: \x1b[32mindex ok\x1b[0m")
 }
 
 function updateModelIndex(name) {
+    const path = "./src/models/index.ts"
     let content
-    if (fs.existsSync('./src/models/index.ts')) {
-        content = fs.readFileSync('./src/models/index.ts')
+    if (fs.existsSync(path)) {
+        content = fs.readFileSync(path)
     } else {
         content = `
 export {
@@ -160,15 +162,16 @@ export {
         // add export
         const start = content.indexOf(`export {`)
         content = content.slice(0, start + 8) + "\n\t" + model + "," + content.slice(start + 8)
-        fs.writeFileSync(`./src/models/index.ts`, content)
+        fs.writeFileSync(path, content)
     }
     console.log("- Model: \x1b[32mindex ok\x1b[0m")
 }
 
 function updateServiceIndex(name) {
+    const path = "./src/services/index.ts"
     let content
-    if (fs.existsSync('./src/services/index.ts')) {
-        content = fs.readFileSync('./src/services/index.ts')
+    if (fs.existsSync(path)) {
+        content = fs.readFileSync(path)
     } else {
         content = `
 export {
@@ -186,15 +189,16 @@ export {
         // add export
         const start2 = content.indexOf(`export {`)
         content = content.slice(0, start2 + 8) + `\n\t${uncapitalize(model)},` + content.slice(start2 + 8)
-        fs.writeFileSync(`./src/services/index.ts`, content)
+        fs.writeFileSync(path, content)
     }
     console.log("- Service: \x1b[32mindex ok\x1b[0m")
 }
 
 function updateDBInit(name) {
+    const path = "./src/db/database.ts"
     let content
-    if (fs.existsSync('./src/db/database.ts')) {
-        content = fs.readFileSync('./src/db/database.ts')
+    if (fs.existsSync(path)) {
+        content = fs.readFileSync(path)
     } else {
         content = `
 import {Dialect, Sequelize} from "sequelize"
@@ -231,17 +235,43 @@ const db = {
 export default db
 `
     }
-    if (content.indexOf(`${name.model}Model`) === -1) {
-        const model = name.model
+    const model = name.model
+    if (content.indexOf(`${model}Model`) === -1) {
         // add new
         const start1 = content.indexOf(`export const connectionParams`)
         content = content.slice(0, start1) + `import {init as init${model}Model} from "../models/${name.min}.model"\n` + content.slice(start1)
         // add export
         const start2 = content.indexOf(`const db = {`)
         content = content.slice(0, start2 + 12) + `\n\t${name.db}: init${model}Model(sequelize),` + content.slice(start2 + 12)
-        fs.writeFileSync(`./src/db/database.ts`, content)
+        fs.writeFileSync(path, content)
     }
     console.log("- Database: \x1b[32minject ok\x1b[0m")
+}
+
+
+function updateErrorUtil(name) {
+    const path = "./src/utils/errors/Errors.ts"
+    let content
+    if (fs.existsSync(path)) {
+        content = fs.readFileSync(path)
+    } else {
+        content = `import {ErrorCode} from "../../enums"
+import {HttpException} from "@d-lab/api-kit"
+
+const Errors = {
+}
+
+export default Errors
+`
+    }
+    const model = name.model
+    if (content.indexOf(model) === -1) {
+        // add error
+        const start1 = content.indexOf(`= {`)
+        content = content.slice(0, start1 + 3) + `\n\tNOT_FOUND_${model}: (reason: string) => new HttpException(ErrorCode.NOT_FOUND_${model}, \`${model} not found for \${reason}\`),` + content.slice(start1 + 3)
+        fs.writeFileSync(path, content)
+    }
+    console.log("- Errors: \x1b[32minject ok\x1b[0m")
 }
 
 function uncapitalize(word) {
@@ -310,6 +340,7 @@ function generateFromDB(migration) {
         createService(name, config)
         updateServiceIndex(name)
         updateDBInit(name)
+        updateErrorUtil(name)
         console.log("## done.")
     } catch (err) {
         console.error(err);
