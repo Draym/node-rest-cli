@@ -292,6 +292,14 @@ function prettify(name) {
         .replace(" ", "")
 }
 
+function escapeRegExp(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+}
+
+function replaceAll(str, find, replace) {
+    return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
+}
+
 function getModelName(data) {
     const start = data.indexOf(`("`)
     const end = data.indexOf(`", {`, start)
@@ -302,7 +310,7 @@ function getModelName(data) {
     }
     return {
         raw: raw,
-        min: name,
+        min: replaceAll(name, "_", "-"),
         model: prettify(name),
         db: prettify(raw)
     }
