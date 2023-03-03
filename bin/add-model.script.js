@@ -124,7 +124,7 @@ ${payload}
 function updateInterfaceIndex(name) {
     const path = "./src/interfaces/index.ts"
     let content
-    if (fs.existsSync()) {
+    if (fs.existsSync(path)) {
         content = fs.readFileSync(path)
     } else {
         content = `
