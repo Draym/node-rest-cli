@@ -185,7 +185,7 @@ export {
         content = content.slice(0, start1) + `const ${uncapitalize(model)} = new ${model}()\n` + content.slice(start1)
         // add export
         const start2 = content.indexOf(`export {`)
-        content = content.slice(0, start2 + 8) + "\n\t" + model + "," + content.slice(start2 + 8)
+        content = content.slice(0, start2 + 8) + `\n\t${uncapitalize(model)},` + content.slice(start2 + 8)
         fs.writeFileSync(`./src/services/index.ts`, content)
     }
     console.log("- Service: \x1b[32mindex ok\x1b[0m")
