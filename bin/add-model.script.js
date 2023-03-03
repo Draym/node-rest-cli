@@ -134,7 +134,7 @@ export {
 `
     }
     const model = name.model
-    if (content.indexOf(model) === -1) {
+    if (content.indexOf(` ${model} `) === -1) {
         // add import
         content = `import ${model} from "./${name.min}.interface"\n` + content
         // add export
@@ -157,7 +157,7 @@ export {
 `
     }
     const model = name.model + "Model"
-    if (content.indexOf(model) === -1) {
+    if (content.indexOf(` ${model} `) === -1) {
         // add import
         content = `import ${model} from "./${name.min}.model"\n` + content
         // add export
@@ -181,7 +181,7 @@ export {
     }
     const model = name.model + "Service"
 
-    if (content.indexOf(model) === -1) {
+    if (content.indexOf(` ${model} `) === -1) {
         // add import
         content = `import ${model} from "./${name.min}.service"\n` + content
         // add new
@@ -237,7 +237,7 @@ export default db
 `
     }
     const model = name.model
-    if (content.indexOf(`${model}Model`) === -1) {
+    if (content.indexOf(`init${model}Model`) === -1) {
         // add new
         const start1 = content.indexOf(`export const connectionParams`)
         content = content.slice(0, start1 - 1) + `import {init as init${model}Model} from "../models/${name.min}.model"\n` + content.slice(start1 - 1)
@@ -266,7 +266,7 @@ export default Errors
 `
     }
     const model = name.model
-    if (content.indexOf(model) === -1) {
+    if (content.indexOf(`_${model}:`) === -1) {
         // add error
         const start1 = content.indexOf(`= {`)
         content = content.slice(0, start1 + 3) + `\n\tNOT_FOUND_${model}: (reason: string) => new HttpException(ErrorCode.NOT_FOUND_${model}, \`${model} not found for \${reason}\`),` + content.slice(start1 + 3)
