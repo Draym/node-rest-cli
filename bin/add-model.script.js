@@ -200,9 +200,9 @@ function updateDBInit(name) {
     if (fs.existsSync(path)) {
         content = fs.readFileSync(path)
     } else {
-        content = `
-import {Dialect, Sequelize} from "sequelize"
+        content = `import {Dialect, Sequelize} from "sequelize"
 import config from "../config/db.config"
+
 
 export const connectionParams = {
     username: config.username,
@@ -239,7 +239,7 @@ export default db
     if (content.indexOf(`${model}Model`) === -1) {
         // add new
         const start1 = content.indexOf(`export const connectionParams`)
-        content = content.slice(0, start1) + `import {init as init${model}Model} from "../models/${name.min}.model"\n` + content.slice(start1)
+        content = content.slice(0, start1 - 1) + `import {init as init${model}Model} from "../models/${name.min}.model"\n` + content.slice(start1 - 1)
         // add export
         const start2 = content.indexOf(`const db = {`)
         content = content.slice(0, start2 + 12) + `\n\t${name.db}: init${model}Model(sequelize),` + content.slice(start2 + 12)
