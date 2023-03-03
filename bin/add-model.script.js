@@ -24,7 +24,7 @@ function createModel(name, config) {
     const content = `import {Model, DataTypes, Sequelize, Optional} from "sequelize"
 import {${model}} from "../interfaces"
 
-export type ${model}CreationAttributes = Optional<${model}, "${ignoredKeys.join(" | ")}">
+export type ${model}CreationAttributes = Optional<${model}, "${ignoredKeys.join("\" | \"")}">
     
 export default class ${model}Model extends Model<${model}, ${model}CreationAttributes> implements ${model} {
 ${properties}
