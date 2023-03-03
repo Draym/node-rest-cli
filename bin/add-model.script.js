@@ -185,7 +185,7 @@ export {
         content = `import ${model} from "./${name.min}.service"\n` + content
         // add new
         const start1 = content.indexOf(`export {`)
-        content = content.slice(0, start1) + `const ${uncapitalize(model)} = new ${model}()\n` + content.slice(start1)
+        content = content.slice(0, start1 - 1) + `const ${uncapitalize(model)} = new ${model}()\n` + content.slice(start1 - 1)
         // add export
         const start2 = content.indexOf(`export {`)
         content = content.slice(0, start2 + 8) + `\n\t${uncapitalize(model)},` + content.slice(start2 + 8)
