@@ -2,6 +2,8 @@
 const fs = require('fs');
 
 const DataTypes = {
+    UUID: "string",
+    UUIDV4: "string",
     STRING: "string",
     BOOLEAN: "boolean",
     NUMBER: "number",
