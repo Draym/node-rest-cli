@@ -234,18 +234,21 @@ export default db
     console.log("- Database: \x1b[32minject ok\x1b[0m")
 }
 
+function uncapitalize(word) {
+    return word.charAt(0).toLowerCase() + word.slice(1)
+}
+function capitalize(word) {
+    return word.charAt(0).toUpperCase() + word.slice(1)
+}
+
 function prettify(name) {
     return name.toLowerCase()
         .replace("-", " ")
         .replace("_", " ")
         .split(' ')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .map(word => capitalize(word))
         .join(' ')
         .replace(" ", "")
-}
-
-function uncapitalize(name) {
-    return name.charAt(0).toLowerCase() + name.slice(1)
 }
 
 function getModelName(data) {
