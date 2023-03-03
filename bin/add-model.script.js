@@ -76,10 +76,10 @@ function createService(name, config) {
         }
         return `\t\t\t${key}: ${key}`
     }).filter(it => it != null).join(",\n")
-    const content = `import db, {sequelize} from "../db/database"
+    const content = `import db from "../db/database"
 import {${model}Model} from "../models"
 import Errors from "../utils/errors/Errors"
-import {Filter, throwIf, throwIfNot, throwIfNull, replaceAll} from "@d-lab/api-kit"
+import {Filter, throwIfNull} from "@d-lab/api-kit"
 
 export default class ${model}Service {
     public async getAll(): Promise<${model}Model[]> {
