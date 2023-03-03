@@ -7,9 +7,7 @@ const DataTypes = {
     NUMBER: "number",
     INTEGER: "number",
     DATE: "Date",
-    DECIMAL: function (precision, scale) {
-        return `string`
-    }
+    DECIMAL: "string"
 }
 
 const ignoredKeys = ["id", "createdAt", "updatedAt"]
@@ -283,9 +281,11 @@ function capitalize(word) {
 }
 
 function prettify(name) {
-    return name.toLowerCase()
-        .replace("-", " ")
-        .replace("_", " ")
+    name = name.toLowerCase()
+    name = replaceAll(name, "-", " ")
+    name = replaceAll(name, "_", " ")
+
+    return name
         .split(' ')
         .map(word => capitalize(word))
         .join(' ')
