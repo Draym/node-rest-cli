@@ -25,7 +25,7 @@ function createModel(name, config) {
 import {${model}} from "../interfaces"
 
 export type ${model}CreationAttributes = Optional<${model}, "${ignoredKeys.join("\" | \"")}">
-    
+
 export default class ${model}Model extends Model<${model}, ${model}CreationAttributes> implements ${model} {
 ${properties}
 }
