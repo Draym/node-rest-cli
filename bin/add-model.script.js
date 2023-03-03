@@ -183,6 +183,57 @@ export {
     console.log("- Service: \x1b[32mindex ok\x1b[0m")
 }
 
+function updateDBInit(name) {
+    let content
+    if (fs.existsSync('./src/db/database.ts')) {
+        content = fs.readFileSync('./src/db/database.ts')
+    } else {
+        content = `
+import {Dialect, Sequelize} from "sequelize"
+import config from "../config/db.config"
+
+export const connectionParams = {
+    username: config.username,
+    password: config.password,
+    dialect: "mysql" as Dialect,
+    database: config.database,
+    host: config.host,
+    port: config.port,
+    pool: {
+        min: 0,
+        max: 5,
+    },
+    define: {
+        charset: "utf8mb4",
+        collate: "utf8mb4_general_ci",
+        underscored: true,
+        freezeTableName: true,
+    },
+    timezone: "+08:00",
+    logQueryParameters: process.env.NODE_ENV === "development",
+    benchmark: true,
+}
+
+const sequelize = new Sequelize(connectionParams)
+export {sequelize}
+
+const db = {
+}
+
+export default db
+`
+    }
+    const model = name.model
+    // add new
+    const start1 = content.indexOf(`export const connectionParams`)
+    content = content.slice(0, start1) + `import {init as init${model}Model} from "../models/${name.min}.model"\n` + content.slice(start1)
+    // add export
+    const start2 = content.indexOf(`const db = {`)
+    content = content.slice(0, start2 + 12) + `\n\t${name.db}: init${model}Model(sequelize),` + content.slice(start2 + 12)
+    fs.writeFileSync(`./src/db/database.ts`, content)
+    console.log("- Database: \x1b[32minject ok\x1b[0m")
+}
+
 function prettify(name) {
     return name.toLowerCase()
         .replace("-", " ")
@@ -239,6 +290,7 @@ function generateFromDB(migration) {
         updateModelIndex(name)
         createService(name, config)
         updateServiceIndex(name)
+        updateDBInit(name)
         console.log("## done.")
     } catch (err) {
         console.error(err);
