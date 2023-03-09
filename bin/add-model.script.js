@@ -61,8 +61,8 @@ ${properties}
     console.log("- Interface: \x1b[32mcode ok\x1b[0m")
 }
 
-function createService(name, config) {
-    const filename = `${name.min}.service.ts`
+function createRepo(name, config) {
+    const filename = `${name.min}.repo.ts`
     const db = name.db
     const model = name.model
     const parameters = Object.keys(config.obj).map(key => {
@@ -84,7 +84,7 @@ import {${model}Model} from "../models"
 import Errors from "../utils/errors/Errors"
 import {Filter, throwIfNull} from "@d-lab/api-kit"
 
-export default class ${model}Service {
+export default class ${model}Repo {
     public async getAll(): Promise<${model}Model[]> {
         return await db.${db}.findAll()
     }
@@ -112,6 +112,34 @@ export default class ${model}Service {
         throwIfNull(it, Errors.NOT_FOUND_${model}(\`id[\${id}\`))
         return it!
     }
+}
+`
+    fs.writeFileSync(`./src/repositories/${filename}`, content)
+    console.log("- Repo: \x1b[32mcode ok\x1b[0m")
+}
+
+function createService(name, config) {
+    const filename = `${name.min}.service.ts`
+    const db = name.db
+    const model = name.model
+    const parameters = Object.keys(config.obj).map(key => {
+        if (ignoredKeys.includes(key)) {
+            return null
+        }
+        const hasNull = config.obj[key].allowNull ? " | null" : ""
+        return `${key}: ${config.obj[key].type}${hasNull}`
+    }).filter(it => it != null).join(", ")
+
+    const payload = Object.keys(config.obj).map(key => {
+        if (ignoredKeys.includes(key)) {
+            return null
+        }
+        return `\t\t\t${key}: ${key}`
+    }).filter(it => it != null).join(",\n")
+    const content = `import db from "../db/database"
+import {${model}Model} from "../models"
+
+export default class ${model}Service {
     
     async create(${parameters}): Promise<${model}Model> {
        return await db.${db}.create({
@@ -168,6 +196,33 @@ export {
         fs.writeFileSync(path, content)
     }
     console.log("- Model: \x1b[32mindex ok\x1b[0m")
+}
+
+function updateRepoIndex(name) {
+    const path = "./src/repositories/index.ts"
+    let content
+    if (fs.existsSync(path)) {
+        content = fs.readFileSync(path)
+    } else {
+        content = `
+export {
+}
+`
+    }
+    const model = name.model + "Repo"
+
+    if (content.indexOf(` ${model} `) === -1) {
+        // add import
+        content = `import ${model} from "./${name.min}.repo"\n` + content
+        // add new
+        const start1 = content.indexOf(`export {`)
+        content = content.slice(0, start1 - 1) + `const ${uncapitalize(model)} = new ${model}()\n` + content.slice(start1 - 1)
+        // add export
+        const start2 = content.indexOf(`export {`)
+        content = content.slice(0, start2 + 8) + `\n\t${uncapitalize(model)},` + content.slice(start2 + 8)
+        fs.writeFileSync(path, content)
+    }
+    console.log("- Repo: \x1b[32mindex ok\x1b[0m")
 }
 
 function updateServiceIndex(name) {
@@ -350,6 +405,8 @@ function generateFromDB(migration) {
         updateInterfaceIndex(name)
         createModel(name, config)
         updateModelIndex(name)
+        createRepo(name, config)
+        updateRepoIndex(name)
         createService(name, config)
         updateServiceIndex(name)
         updateDBInit(name)
