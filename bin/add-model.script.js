@@ -82,7 +82,8 @@ function createRepo(name, config) {
     const content = `import db from "../db/database"
 import {${model}Model} from "../models"
 import Errors from "../utils/errors/Errors"
-import {Filter, throwIfNull} from "@d-lab/api-kit"
+import {Filter} from "@d-lab/api-kit"
+import {throwIfNull} from "@d-lab/common-kit"
 
 export default class ${model}Repo {
     public async getAll(): Promise<${model}Model[]> {
