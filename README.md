@@ -20,9 +20,11 @@ npx add-model 01_create_users_table
 - Generate
   - interfaces/{model}.interface.ts
   - models/{model}.model.ts
+  - repositories/{model}.repo.ts
   - services/{model}.service.ts
 
 - Update
   - interfaces/index.ts
   - models/index.ts
+  - repositories/index.ts
   - services/index.ts
